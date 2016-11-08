@@ -1,5 +1,5 @@
-# sqlbuilder
-SqlBuilder allows users to build quickly and easily complex.
+# puja-sqlbuilder
+Puja-SqlBuilder allows users to build quickly and easily complex.
 
 Install:
 - With composer:
