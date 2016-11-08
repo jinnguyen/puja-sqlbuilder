@@ -3,7 +3,7 @@ SqlBuilder allows users to build quickly and easily complex.
 
 Install:
 - With composer:
-<pre>composer require jinnguyen/sqlbuilder</pre>
+<pre>composer require jinnguyen/puja-sqlbuilder</pre>
 Usage:
 <pre>
     require_once 'path/to/vendor/autoload.php';
