@@ -1,9 +1,9 @@
 {
-    "name": "jinnguyen/sqlbuilder",
-    "description": "SqlBuilder allows users to build quickly and easily complex ",
+    "name": "jinnguyen/puja-sqlbuilder",
+    "description": "Puja-SqlBuilder allows users to build quickly and easily complex ",
     "type": "library",
     "license": "Apache License 2.0",
-    "keywords": ["sqlbuilder", "querybuilder", "query builder", "sql builder"],
+    "keywords": ["puja", "sqlbuilder", "querybuilder", "query builder", "sql builder"],
     "authors": [
         {
             "name": "Jin Nguyen",
