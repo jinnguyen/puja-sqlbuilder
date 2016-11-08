@@ -1,0 +1,24 @@
+{
+    "name": "jinnguyen/sqlbuilder",
+    "description": "SqlBuilder allows users to build quickly and easily complex ",
+    "type": "library",
+    "license": "Apache License 2.0",
+    "keywords": ["sqlbuilder", "querybuilder", "query builder", "sql builder"],
+    "authors": [
+        {
+            "name": "Jin Nguyen",
+            "email": "w2ajax@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {},
+    "require-dev": {
+        "codeception/aspect-mock": "0.5.3",
+        "phpunit/phpunit": "^4.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "Puja\\SqlBuilder\\": "src/"
+        }
+    }
+}
