@@ -26,5 +26,8 @@ $select = $builder->reset()->replace('content', array('name' => 'Jin', 'addtime_
     ->where('content_id=%d', 5);
 echo '<pre>Replace:' . $select->getQuery() . '</pre>';
 
-$select = $builder->reset()->delete('content')->where('content_id=%d', 5);
+$select = $builder->reset()->delete('content')->where(array('id' => 'id-string'));
 echo '<pre>Delete:' . $select->getQuery() . '</pre>';
+
+$select = $builder->reset()->truncate('content');
+echo '<pre>Truncate:' . $select->getQuery() . '</pre>';

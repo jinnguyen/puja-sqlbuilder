@@ -1,5 +1,5 @@
-# puja-sqlbuilder
-Puja-SqlBuilder allows users to build quickly and easily complex.
+# sqlbuilder v1.1.0
+SqlBuilder allows users to build quickly and easily complex.
 
 Install:
 - With composer:
@@ -69,3 +69,11 @@ echo $select->getQuery();</pre>
 
 Result:
 <pre>DELETE FROM content WHERE (content_id=5)</pre>
+
+<strong>TRUNCATE</strong>
+<pre>
+$select = $builder->reset()->truncate('content');
+echo $select->getQuery();</pre>
+
+Result:
+<pre>TRUNCATE TABLE content</pre>

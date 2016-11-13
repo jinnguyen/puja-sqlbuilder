@@ -13,6 +13,7 @@ class Builder
     const QUERYTYPE_INSERT = 'INSERT';
     const QUERYTYPE_INSERT_IGNORE = 'INSERT IGNORE';
     const QUERYTYPE_REPLACE = 'REPLACE';
+    const QUERYTYPE_TRUNCATE = 'TRUNCATE TABLE';
     const ORDER_ASC = 'ASC';
     const ORDER_DESC = 'DESC';
 
@@ -159,6 +160,16 @@ class Builder
     }
 
     /**
+     * @param $table
+     * @return \Puja\SqlBuilder\Builder
+     */
+    public function truncate($table)
+    {
+        $this->queryTypeProcess(self::QUERYTYPE_TRUNCATE, $table);
+        return $this;
+    }
+
+    /**
      * Set delete stament
      * @param string $table
      * @return \Puja\SqlBuilder\Builder
@@ -258,6 +269,9 @@ class Builder
             case self::QUERYTYPE_REPLACE:
                 $sql = $this->buildQueryInsert();
                 break;
+            case self::QUERYTYPE_TRUNCATE:
+                $sql = $this->buildQueryTruncate();
+                break;
             default:
                 throw new Exception('Dont support query type: ' . $this->queryType);
                 break;
@@ -312,6 +326,15 @@ class Builder
         $sql .= $this->buildPartFrom(false);
         $sql .= $this->buildPartWhere();
         $sql .= $this->buildPartLimit();
+
+        return $sql;
+    }
+
+    protected function buildQueryTruncate()
+    {
+
+        $sql = $this->queryType;
+        $sql .= $this->buildPartFrom(false, ' ');
 
         return $sql;
     }
@@ -415,7 +438,7 @@ class Builder
             $this->fields[] = $this->fieldProcess($tableAlias, $selectFields);
         }
     }
-    
+
     protected function tableProcess($table)
     {
     	if (is_array($table)) {
@@ -435,7 +458,7 @@ class Builder
     	
     	return array($tableName, $tableAlias);
     }
-    
+
     protected function fieldProcess($table, $fields)
     {
         $return = array();
@@ -449,7 +472,7 @@ class Builder
             	} else {
             		$return[] = $table . '.' . $field . ' AS ' . $alias;
             	}
-                
+
             }
         }
     	return implode(',', $return);
@@ -457,14 +480,48 @@ class Builder
 
     protected function buildFieldExtra($field, $value)
     {
+        $result = array();
         list($key, $extra) = explode('__', $field . '__');
-        if ($extra == 'exact') {
-            return array("`{$key}`", $value);
-        } elseif ($extra == 'increase') {
-            return array("`{$key}`", "`{$key}`" . '+' . $value);
-        } else {
-            return array("`{$key}`", '"' . addslashes($value) . '"');
+        switch ($extra) {
+            case 'exact':
+                $result = array("`{$key}`", $value, '=');
+                break;
+            case 'increase':
+                $result = array("`{$key}`", "`{$key}`" . '+' . $value, '=');
+                break;
+            case 'int':
+                $result = array("`{$key}`", (int) $value, '=');
+                break;
+            case 'float':
+                $result = array("`{$key}`", (float) $value, '=');
+                break;
+            case 'bool':
+                $result = array("`{$key}`", (bool) $value, '=');
+                break;
+            case 'null':
+                $result = array("`{$key}`", 'NULL', '=');
+                break;
+            case 'gt':
+                $result = array("`{$key}`", $value, '>');
+                break;
+            case 'gte':
+                $result = array("`{$key}`", $value, '>=');
+                break;
+            case 'lt':
+                $result = array("`{$key}`", $value, '<');
+                break;
+            case 'lte':
+                $result = array("`{$key}`", $value, '<=');
+                break;
+            case 'diff':
+                $result = array("`{$key}`", $value, '!=');
+                break;
+            default:
+                $result = array("`{$key}`", '"' . addslashes($value) . '"', '=');
+                break;
+
         }
+        return $result;
     }
 
     protected function fieldUpdateProcess()
@@ -473,9 +530,9 @@ class Builder
         $table = key($this->fields);
 
         foreach ($this->fields[$table] as $field => $value) {
-            list($key, $val) = $this->buildFieldExtra($field, $value);
+            list($key, $val, $operator) = $this->buildFieldExtra($field, $value);
             if ($table) {
-                $return[] = $table . '.' . $key . '=' . $val;
+                $return[] = $table . '.' . $key . $operator . $val;
             } else {
                 $return[] =  $key . '=' . $val;
             }
@@ -520,7 +577,8 @@ class Builder
         } else {
             // array criteria
             foreach ($cond as $key => $value) {
-                $cond[$key] = $key . '=' . $value;
+                list($field, $fieldValue, $op) = $this->buildFieldExtra($key, $value);
+                $cond[$key] = $field . $op . $fieldValue;
             }
             $cond = implode( ' AND ', $cond);
         }
