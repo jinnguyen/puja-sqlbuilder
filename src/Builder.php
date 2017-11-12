@@ -516,6 +516,21 @@ class Builder
             case 'diff':
                 $result = array("`{$key}`", $value, '!=');
                 break;
+            case 'in':
+                $result = array("`{$key}`", '(' . $value . ')', ' IN ');
+                break;
+            case 'notIn':
+                $result = array("`{$key}`", '(' . $value . ')', ' NOT IN ');
+                break;
+            case 'like':
+                $result = array("`{$key}`", '%' . $value . '%', ' LIKE ');
+                break;
+            case 'like_begin':
+                $result = array("`{$key}`", $value . '%', ' LIKE ');
+                break;
+            case 'like_end':
+                $result = array("`{$key}`", '%' . $value, ' LIKE ');
+                break;
             default:
                 $result = array("`{$key}`", '"' . addslashes($value) . '"', '=');
                 break;
